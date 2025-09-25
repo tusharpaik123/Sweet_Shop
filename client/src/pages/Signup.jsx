@@ -1,15 +1,15 @@
-// client/src/pages/Signup.jsx
 import React from "react";
 import { useForm } from "react-hook-form";
 
 function Signup(){
-    // 1. Initialize React Hook Form
-    const { register, handleSubmit } = useForm();
+    const { 
+        register, 
+        handleSubmit, 
+        formState: { errors } 
+    } = useForm();
 
-    // Placeholder function for submission
     const onSubmit = (data) => {
         console.log("Form Data Submitted:", data);
-        // This is where we'll handle the API call in a later step
     };
 
     return(
@@ -19,7 +19,6 @@ function Signup(){
                     Create Sweet Shop Account
                 </h2>
                 
-                {/* 2. Attach handleSubmit to the form */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     
                     {/* Name Field */}
@@ -29,10 +28,15 @@ function Signup(){
                             type="text" 
                             id="name" 
                             placeholder="Your Shop Name or Your Name"
-                            // 3. Register the input field
-                            {...register("name", { required: true })} 
-                            className="w-full px-4 py-2 bg-slate-gray/20 border border-slate-gray/40 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out"
+                            {...register("name", { required: "Name is required" })} 
+                            className={`w-full px-4 py-2 bg-slate-gray/20 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out ${errors.name ? 'border-red-500 border-2' : 'border border-slate-gray/40'}`}
                         />
+                        {/* Conditional error message display */}
+                        {errors.name && (
+                            <p className="mt-1 text-xs text-red-400 font-medium">
+                                {errors.name.message}
+                            </p>
+                        )}
                     </div>
                     
                     {/* Email Field */}
@@ -42,9 +46,21 @@ function Signup(){
                             type="email" 
                             id="email" 
                             placeholder="example@sweetshop.com"
-                            {...register("email", { required: true })} 
-                            className="w-full px-4 py-2 bg-slate-gray/20 border border-slate-gray/40 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out"
+                            {...register("email", { 
+                                required: "Email is required",
+                                // Add basic email pattern validation
+                                pattern: {
+                                    value: /^\S+@\S+$/i,
+                                    message: "Invalid email address"
+                                }
+                            })} 
+                            className={`w-full px-4 py-2 bg-slate-gray/20 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out ${errors.email ? 'border-red-500 border-2' : 'border border-slate-gray/40'}`}
                         />
+                        {errors.email && (
+                            <p className="mt-1 text-xs text-red-400 font-medium">
+                                {errors.email.message}
+                            </p>
+                        )}
                     </div>
 
                     {/* Password Field */}
@@ -54,9 +70,20 @@ function Signup(){
                             type="password" 
                             id="password" 
                             placeholder="Min 8 characters"
-                            {...register("password", { required: true })} 
-                            className="w-full px-4 py-2 bg-slate-gray/20 border border-slate-gray/40 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out"
+                            {...register("password", { 
+                                required: "Password is required",
+                                minLength: {
+                                    value: 8,
+                                    message: "Password must be at least 8 characters"
+                                }
+                            })} 
+                            className={`w-full px-4 py-2 bg-slate-gray/20 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out ${errors.password ? 'border-red-500 border-2' : 'border border-slate-gray/40'}`}
                         />
+                        {errors.password && (
+                            <p className="mt-1 text-xs text-red-400 font-medium">
+                                {errors.password.message}
+                            </p>
+                        )}
                     </div>
 
                     {/* Submit Button */}
