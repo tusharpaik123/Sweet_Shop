@@ -1,5 +1,6 @@
 
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom'; 
 import Signup from './Signup';
 
@@ -24,4 +25,21 @@ describe('Signup Page', () => {
         const submitButton = screen.getByRole('button', { name: /register|sign up/i });
         expect(submitButton).toBeInTheDocument();
     });
+});
+
+test('displays validation errors on empty submission', async () => {
+    
+    renderWithRouter(<Signup />);
+
+    const submitButton = screen.getByRole('button', { name: /register/i });
+
+    await userEvent.click(submitButton);
+
+    
+    const requiredErrorElements = await screen.findAllByText(/Name is required/i);
+    expect(requiredErrorElements.length).toBeGreaterThanOrEqual(1);
+    
+    expect(await screen.findByText(/Email is required/i)).toBeInTheDocument();
+
+    expect(await screen.findByText(/Password is required/i)).toBeInTheDocument();
 });
