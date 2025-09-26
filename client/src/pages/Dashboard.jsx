@@ -6,7 +6,7 @@ function Dashboard(){
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [query, setQuery] = useState({ name: '', category: '', minPrice: '', maxPrice: '' });
-    const [purchasing, setPurchasing] = useState({}); // id -> loading
+    const [purchasing, setPurchasing] = useState({}); // _id -> loading
 
     const fetchAll = async () => {
         setLoading(true);
@@ -40,16 +40,16 @@ function Dashboard(){
         }
     };
 
-    const onPurchase = async (id) => {
-        setPurchasing((p) => ({ ...p, [id]: true }));
+    const onPurchase = async (_id) => {
+        setPurchasing((p) => ({ ...p, [_id]: true }));
         try {
-            await purchaseSweet(id, 1);
+            await purchaseSweet(_id, 1);
             // refresh list
             await fetchAll();
         } catch (e) {
             alert(e?.response?.data?.message || 'Purchase failed');
         } finally {
-            setPurchasing((p) => ({ ...p, [id]: false }));
+            setPurchasing((p) => ({ ...p, [_id]: false }));
         }
     };
 
@@ -75,20 +75,24 @@ function Dashboard(){
             {!loading && !error && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {sweets.map((s) => (
-                        <div key={s.id} className="bg-slate-900/70 border border-slate-700 rounded-lg p-4 text-white">
+                        <div key={s._id} className="bg-slate-900/70 border border-slate-700 rounded-lg p-4 text-white">
                             <div className="flex items-center justify-between mb-2">
                                 <h3 className="text-xl font-semibold">{s.name}</h3>
-                                <span className="text-light-blue font-bold">${Number(s.price).toFixed(2)}</span>
+                                <span className="text-light-blue font-bold">₹{Number(s.price).toFixed(2)}</span>
                             </div>
+                            {s.image && (
+                                <img src={s.image} alt={s.name} className="w-full h-40 object-cover rounded mb-3 border border-slate-700" />
+                            )}
                             <div className="text-sm text-slate-300">Category: {s.category}</div>
-                            <div className="text-sm text-slate-300 mb-3">In stock: {s.quantity}</div>
-                            <button 
-                                onClick={() => onPurchase(s.id)}
-                                disabled={s.quantity <= 0 || purchasing[s.id]}
-                                className="mt-2 bg-light-blue text-dark-primary px-3 py-2 rounded font-semibold disabled:opacity-60"
-                            >
-                                {purchasing[s.id] ? 'Purchasing...' : (s.quantity <= 0 ? 'Out of stock' : 'Purchase')}
-                            </button>
+                            <div className="text-sm text-slate-300 mb-3">In stock: {s.quantity} kg(s)</div>
+                            <div className="flex gap-2">
+                                <a 
+                                    href={`/buy/${s._id}`}
+                                    className="mt-2 bg-light-blue text-dark-primary px-3 py-2 rounded font-semibold"
+                                >
+                                    Buy
+                                </a>
+                            </div>
                         </div>
                     ))}
                     {sweets.length === 0 && (

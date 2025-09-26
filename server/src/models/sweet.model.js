@@ -5,36 +5,50 @@ const sweetSchema = new mongoose.Schema(
         name: {
             type: String,
             required: true,
+            trim: true
         },
 
         description: {
             type: String,
-            required: true,
+            required: false,
+            trim: true
         },
 
         category: {
             type: String,
             required: true,
-            unique: true,
+            trim: true
         },
 
         price: {
-            type: String,
+            type: Number,
             required: true,
+            min: 0
         },
 
-        stock: {
-            type: String,
+        quantity: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 0
         },
         
         image: {
             type: String,
-            default: "https://tse2.mm.bing.net/th/id/OIP.b2VM6VpFKtDuv1PUp3aj3AAAAA?rs=1&pid=ImgDetMain&o=7&rm=3"
+            default: "https://via.placeholder.com/300x200/6366f1/ffffff?text=No+Image"
         },
+
+        isActive: {
+            type: Boolean,
+            default: true
+        }
     },
     {
         timestamps: true
     }
 );
+
+
+sweetSchema.index({ name: 'text', category: 'text' });
 
 export const Sweet = mongoose.model("Sweet", sweetSchema);

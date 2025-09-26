@@ -8,8 +8,8 @@ export default {
     extend: {
       colors: {
         'dark-primary': '#0f172a',
-        'light-blue': '#1e40af', // Darker blue for better contrast
-        'slate-gray': '#475569', // Darker gray for better readability
+        'light-blue': '#1e40af', 
+        'slate-gray': '#475569',
       },
       backgroundImage: {
         'gradient-primary': 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',

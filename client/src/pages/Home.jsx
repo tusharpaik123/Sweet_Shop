@@ -66,13 +66,34 @@ const Home = () => {
                 </Link>
               </>
             ) : (
-              <Link 
-                to="/dashboard" 
-                className="flex items-center justify-center gap-3 px-8 sm:px-10 py-3 sm:py-4 text-lg sm:text-xl bg-light-blue text-dark-primary rounded-xl font-semibold hover:bg-opacity-90 transition-all group"
-              >
-                Go to Dashboard
-                <FaCheckCircle className="transform transition-transform group-hover:scale-110" />
-              </Link>
+              <>
+                {/* Role-aware CTA */}
+                {useSelector((state) => state.auth.isAdmin) ? (
+                  <Link 
+                    to="/admin" 
+                    className="flex items-center justify-center gap-3 px-8 sm:px-10 py-3 sm:py-4 text-lg sm:text-xl bg-light-blue text-dark-primary rounded-xl font-semibold hover:bg-opacity-90 transition-all group"
+                  >
+                    Manage Sweets
+                    <FaCheckCircle className="transform transition-transform group-hover:scale-110" />
+                  </Link>
+                ) : (
+                  <>
+                    <Link 
+                      to="/dashboard" 
+                      className="flex items-center justify-center gap-3 px-8 sm:px-10 py-3 sm:py-4 text-lg sm:text-xl bg-light-blue text-dark-primary rounded-xl font-semibold hover:bg-opacity-90 transition-all group"
+                    >
+                      Go to Dashboard
+                      <FaCheckCircle className="transform transition-transform group-hover:scale-110" />
+                    </Link>
+                    <Link 
+                      to="/orders" 
+                      className="flex items-center justify-center gap-3 px-8 sm:px-10 py-3 sm:py-4 text-lg sm:text-xl border border-light-blue text-light-blue rounded-xl font-semibold hover:bg-light-blue hover:text-dark-primary transition-all group"
+                    >
+                      My Orders
+                    </Link>
+                  </>
+                )}
+              </>
             )}
           </div>
         </section>

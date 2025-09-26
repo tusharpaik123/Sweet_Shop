@@ -21,10 +21,10 @@ function Signup(){
         setSubmitting(true);
         try {
             const result = await registerApi(data);
-            // If registration returns user data and token, auto-login
             if (result.user && result.token) {
                 dispatch(loginAction(result));
-                navigate('/dashboard', { replace: true });
+                const role = result?.user?.role;
+                navigate(role === 'admin' ? '/admin' : '/dashboard', { replace: true });
             } else {
                 navigate('/login', { replace: true });
             }

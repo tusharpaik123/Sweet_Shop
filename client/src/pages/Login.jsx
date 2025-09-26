@@ -3,20 +3,24 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login as loginAction } from "../store/authSlice.js";
+import { selectIsAdmin } from "../store/authSlice.js";
+import { useSelector } from "react-redux";
 import { login as loginApi } from "../services/auth.js";
 
 function Login(){
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
     const dispatch = useDispatch();
+    const isAdmin = useSelector(selectIsAdmin);
     const navigate = useNavigate();
     const [apiError, setApiError] = useState("");
 
     const onSubmit = async (data) => {
         setApiError("");
         try {
-            const result = await loginApi(data); // { user, token }
+            const result = await loginApi(data); 
             dispatch(loginAction(result));
-            navigate("/dashboard", { replace: true });
+            const role = result?.user?.role;
+            navigate(role === 'admin' ? "/admin" : "/dashboard", { replace: true });
         } catch (err) {
             const msg = err?.response?.data?.message || "Invalid credentials";
             setApiError(msg);

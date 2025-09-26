@@ -7,7 +7,9 @@ import {
   FaSignOutAlt,
   FaBars,
   FaTimes,
-  FaCog
+  FaCog,
+  FaChartBar,
+  FaShoppingCart
 } from 'react-icons/fa';
 import { logout, selectUserAuth, selectUser, selectIsAdmin } from '../../store/authSlice.js';
 
@@ -36,16 +38,22 @@ const Header = () => {
 
   const menuItems = [
     { to: '/', icon: <FaHome />, label: 'Home' },
-    ...(userAuth ? [{
-      to: `/dashboard` , 
-      icon: <FaUser />, 
-      label: 'Dashboard'
-    }] : []),
-    ...(isAdmin ? [{
-      to: `/admin` , 
-      icon: <FaCog />, 
-      label: 'Admin'
-    }] : []),
+    ...(
+      userAuth && !isAdmin 
+        ? [
+            { to: `/dashboard`, icon: <FaUser />, label: 'Dashboard' },
+            { to: `/orders`, icon: <FaShoppingCart />, label: 'Orders' },
+          ] 
+        : []
+    ),
+    ...(
+      isAdmin 
+        ? [
+            { to: `/admin`, icon: <FaCog />, label: 'Admin' },
+            { to: `/admin/stats`, icon: <FaChartBar />, label: 'Stats' },
+          ]
+        : []
+    ),
   ];
 
   return (

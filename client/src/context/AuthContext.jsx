@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // hydrate from storage
+    
     try {
       const raw = localStorage.getItem('auth');
       if (raw) {

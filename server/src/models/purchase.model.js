@@ -2,27 +2,56 @@ import mongoose, { Schema } from "mongoose";
 
 const purchaseSchema = new mongoose.Schema(
     {
-        sweetID: {
+        user: {
             type: Schema.Types.ObjectId,
-            ref: 'Purchase'
+            ref: 'User',
+            required: true
         },
 
-        price: {
-            type: String,
+        sweet: {
+            type: Schema.Types.ObjectId,
+            ref: 'Sweet',
             required: true
         },
 
         quantity: {
-            type: String,
+            type: Number,
+            required: true,
+            min: 1
+        },
+
+        unitPrice: {
+            type: Number,
+            required: true,
+            min: 0
+        },
+
+        totalPrice: {
+            type: Number,
+            required: true,
+            min: 0
         },
         
+        status: {
+            type: String,
+            enum: ['pending', 'completed', 'cancelled'],
+            default: 'completed'
+        },
+
         comment: {
             type: String,
-        },
+            trim: true
+        }
     },
     {
         timestamps: true
     }
 );
+
+// Calculate total price before saving
+purchaseSchema.pre('save', function(next) {
+    this.totalPrice = this.quantity * this.unitPrice;
+    next();
+});
 
 export const Purchase = mongoose.model("Purchase", purchaseSchema);
