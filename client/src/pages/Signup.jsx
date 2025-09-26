@@ -1,5 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login as loginAction } from "../store/authSlice.js";
+import { register as registerApi } from "../services/auth.js";
 
 function Signup(){
     const { 
@@ -7,9 +11,28 @@ function Signup(){
         handleSubmit, 
         formState: { errors } 
     } = useForm();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [apiError, setApiError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
 
-    const onSubmit = (data) => {
-        console.log("Form Data Submitted:", data);
+    const onSubmit = async (data) => {
+        setApiError("");
+        setSubmitting(true);
+        try {
+            const result = await registerApi(data);
+            // If registration returns user data and token, auto-login
+            if (result.user && result.token) {
+                dispatch(loginAction(result));
+                navigate('/dashboard', { replace: true });
+            } else {
+                navigate('/login', { replace: true });
+            }
+        } catch (e) {
+            setApiError(e?.response?.data?.message || 'Registration failed');
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return(
@@ -18,6 +41,7 @@ function Signup(){
                 <h2 className="text-3xl font-extrabold text-light-blue mb-6 text-center tracking-wide">
                     Create Sweet Shop Account
                 </h2>
+                {apiError && <div className="mb-3 text-red-400 text-sm">{apiError}</div>}
                 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     
@@ -29,7 +53,7 @@ function Signup(){
                             id="name" 
                             placeholder="Your Shop Name or Your Name"
                             {...register("name", { required: "Name is required" })} 
-                            className={`w-full px-4 py-2 bg-slate-gray/20 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out ${errors.name ? 'border-red-500 border-2' : 'border border-slate-gray/40'}`}
+                            className={`w-full px-4 py-2 bg-slate-800/30 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out ${errors.name ? 'border-red-500 border-2' : 'border border-slate-600'}`}
                         />
                         {/* Conditional error message display */}
                         {errors.name && (
@@ -54,7 +78,7 @@ function Signup(){
                                     message: "Invalid email address"
                                 }
                             })} 
-                            className={`w-full px-4 py-2 bg-slate-gray/20 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out ${errors.email ? 'border-red-500 border-2' : 'border border-slate-gray/40'}`}
+                            className={`w-full px-4 py-2 bg-slate-800/30 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out ${errors.email ? 'border-red-500 border-2' : 'border border-slate-600'}`}
                         />
                         {errors.email && (
                             <p className="mt-1 text-xs text-red-400 font-medium">
@@ -77,8 +101,9 @@ function Signup(){
                                     message: "Password must be at least 8 characters"
                                 }
                             })} 
-                            className={`w-full px-4 py-2 bg-slate-gray/20 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out ${errors.password ? 'border-red-500 border-2' : 'border border-slate-gray/40'}`}
+                            className={`w-full px-4 py-2 bg-slate-800/30 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition duration-150 ease-in-out ${errors.password ? 'border-red-500 border-2' : 'border border-slate-600'}`}
                         />
+                        {/* Conditional error message display */}
                         {errors.password && (
                             <p className="mt-1 text-xs text-red-400 font-medium">
                                 {errors.password.message}
@@ -89,9 +114,10 @@ function Signup(){
                     {/* Submit Button */}
                     <button 
                         type="submit" 
-                        className="w-full mt-6 bg-light-blue text-dark-primary py-2.5 px-4 rounded-lg font-bold hover:bg-opacity-90 transition-colors duration-200"
+                        disabled={submitting}
+                        className="w-full mt-6 bg-light-blue text-dark-primary py-2.5 px-4 rounded-lg font-bold hover:bg-opacity-90 transition-colors duration-200 disabled:opacity-60"
                     >
-                        Register
+                        {submitting ? 'Registering...' : 'Register'}
                     </button>
                     
                     <p className="text-center text-sm text-gray-400 mt-4">

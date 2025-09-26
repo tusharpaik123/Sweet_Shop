@@ -1,10 +1,62 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import App from './App.jsx';
+import { Provider } from 'react-redux';
+import store, { persistor } from './store/store.js';
+import { PersistGate } from 'redux-persist/integration/react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+import { Home, Login, Signup, Dashboard, Admin } from './pages/index.js';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/signup",
+        element: <Signup />,
+      },
+      {
+        path: "/dashboard",
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "/dashboard",
+            element: <Dashboard />,
+          }
+        ]
+      },
+      {
+        path: "/admin",
+        element: <ProtectedRoute requireAdmin />,
+        children: [
+          {
+            path: "/admin",
+            element: <Admin />,
+          }
+        ]
+      }
+    ],
+  },
+]);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <Provider store={store}>
+      <PersistGate loading={<div className="text-center text-gray-300 py-10">Loading...</div>} persistor={persistor}>
+        <RouterProvider router={router} />
+      </PersistGate>
+    </Provider>
   </StrictMode>,
-)
+);

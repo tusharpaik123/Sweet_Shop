@@ -1,16 +1,61 @@
-# React + Vite
+# Sweet Shop Frontend (Client)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite SPA for the Sweet Shop application. Uses React Router, Tailwind CSS (v4 via `@tailwindcss/vite`), and Axios.
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js 18+
+- Backend API running (see `server/` folder). Default expects `http://localhost:5000`.
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Install dependencies:
 
-## Expanding the ESLint configuration
+   ```bash
+   npm install
+   ```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+2. Configure environment variables (optional if using default localhost):
+
+   - Copy `.env.example` to `.env` (or `.env.local`) and adjust as needed.
+
+   ```bash
+   cp .env.example .env
+   # then edit .env
+   ```
+
+   Available vars:
+   - `VITE_API_URL` – Base URL of the backend API (e.g., `http://localhost:5000`).
+
+3. Start the dev server:
+
+   ```bash
+   npm run dev
+   ```
+
+## Features
+
+- Authentication (Register, Login) with JWT persistence (LocalStorage)
+- Protected routes via `src/components/ProtectedRoute.jsx`
+- Sweets listing with search and price filters
+- Purchase sweet (button disabled when quantity is 0)
+- Admin panel to add, update, delete, and restock sweets
+
+## Key Files
+
+- `src/context/AuthContext.jsx` – Auth state and helpers
+- `src/services/api.js` – Axios instance (attaches JWT)
+- `src/services/auth.js` – Register/Login API calls
+- `src/services/sweets.js` – Sweets API calls
+- `src/pages/` – Views (`Login`, `Signup`, `Dashboard`, `Admin`)
+- `src/components/ProtectedRoute.jsx` – Route guard
+- `src/index.css` – Tailwind import and custom utilities
+
+## Tailwind CSS
+
+Tailwind v4 is integrated using `@tailwindcss/vite` in `vite.config.js`. CSS utilities are available via `@import "tailwindcss";` at the top of `src/index.css`. Some additional custom utility classes are defined at the bottom of `src/index.css` for the app's gradient and brand colors.
+
+## Notes
+
+- This client expects the backend endpoints as described in the project requirements (e.g., `/api/auth/register`, `/api/auth/login`, `/api/sweets`, etc.). Ensure CORS is enabled on the server during development.
+
