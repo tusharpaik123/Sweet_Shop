@@ -7,7 +7,7 @@ import store, { persistor } from './store/store.js';
 import { PersistGate } from 'redux-persist/integration/react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { Home, Login, Signup, Dashboard, Admin, AddSweet, Buy, Orders, AdminStats } from './pages/index.js';
+import { Home, Login, Signup, Products, Admin, AddSweet, Buy, Orders, AdminStats } from './pages/index.js';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 const router = createBrowserRouter([
@@ -28,12 +28,12 @@ const router = createBrowserRouter([
         element: <Signup />,
       },
       {
-        path: "/dashboard",
+        path: "/products",
         element: <ProtectedRoute />,
         children: [
           {
-            path: "/dashboard",
-            element: <Dashboard />,
+            path: "/products",
+            element: <Products />,
           }
         ]
       },

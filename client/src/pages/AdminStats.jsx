@@ -40,37 +40,65 @@ export default function AdminStats(){
     }, [purchases]);
 
     return (
-        <div className="pt-6 pb-10 text-white">
-            <h2 className="text-3xl font-bold mb-4">Admin - Sales Statistics</h2>
-            {loading && <div className="text-gray-300">Loading...</div>}
-            {error && <div className="text-red-400">{error}</div>}
+        <div className="pt-6 pb-10 animate-fade-in">
+            <div className="mb-8">
+                <h2 className="text-3xl font-bold text-chocolate mb-2">Sales Statistics</h2>
+                <p className="text-chocolate/70">Track your sweet shop's performance and top-selling items</p>
+            </div>
+            
+            {loading && (
+                <div className="text-center py-8">
+                    <div className="text-chocolate/70 text-lg">Loading statistics...</div>
+                </div>
+            )}
+            
+            {error && (
+                <div className="card-dark p-4 mb-6 border-l-4 border-error">
+                    <div className="text-error font-medium">Error: {error}</div>
+                </div>
+            )}
+            
             {!loading && !error && (
                 <>
-                    <div className="grid md:grid-cols-3 gap-4 mb-6">
-                        <div className="bg-slate-900/70 border border-slate-700 rounded p-4">
-                            <div className="text-slate-300">Total Revenue</div>
-                            <div className="text-2xl font-bold text-light-blue">₹{totals.totalRevenue.toFixed(2)}</div>
+                    <div className="grid md:grid-cols-3 gap-6 mb-8">
+                        <div className="card p-6 text-center hover:shadow-warm transition-all duration-300 animate-slide-up">
+                            <div className="text-chocolate/70 text-sm font-medium mb-1">Total Revenue</div>
+                            <div className="text-3xl font-bold text-saffron">₹{totals.totalRevenue.toFixed(2)}</div>
                         </div>
-                        <div className="bg-slate-900/70 border border-slate-700 rounded p-4">
-                            <div className="text-slate-300">Total Quantity Sold</div>
-                            <div className="text-2xl font-bold text-light-blue">{totals.totalKg} kg(s)</div>
+                        <div className="card p-6 text-center hover:shadow-warm transition-all duration-300 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+                            <div className="text-chocolate/70 text-sm font-medium mb-1">Total Quantity Sold</div>
+                            <div className="text-3xl font-bold text-saffron">{totals.totalKg} kg(s)</div>
                         </div>
-                        <div className="bg-slate-900/70 border border-slate-700 rounded p-4">
-                            <div className="text-slate-300">Total Orders</div>
-                            <div className="text-2xl font-bold text-light-blue">{purchases.length}</div>
+                        <div className="card p-6 text-center hover:shadow-warm transition-all duration-300 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                            <div className="text-chocolate/70 text-sm font-medium mb-1">Total Orders</div>
+                            <div className="text-3xl font-bold text-saffron">{purchases.length}</div>
                         </div>
                     </div>
 
-                    <div className="bg-slate-900/70 border border-slate-700 rounded p-4">
-                        <h3 className="text-xl font-semibold mb-3">Top Sweets by Revenue</h3>
+                    <div className="card p-6 shadow-chocolate animate-slide-up" style={{ animationDelay: '0.3s' }}>
+                        <div className="mb-6">
+                            <h3 className="text-xl font-bold text-chocolate mb-2">Top Products by Revenue</h3>
+                            <p className="text-chocolate/70 text-sm">Your best-performing products</p>
+                        </div>
                         {totals.top.length === 0 ? (
-                            <div className="text-slate-300">No data.</div>
+                            <div className="text-center py-8">
+                                <div className="text-chocolate/70">No sales data available yet.</div>
+                                <div className="text-chocolate/50 text-sm mt-2">Start selling to see your top performers!</div>
+                            </div>
                         ) : (
-                            <div className="space-y-2">
-                                {totals.top.map((t) => (
-                                    <div key={t.name} className="flex justify-between text-sm border border-slate-700 rounded p-2">
-                                        <div>{t.name}</div>
-                                        <div className="text-slate-300">{t.qty} kg(s) · ₹{t.revenue.toFixed(2)}</div>
+                            <div className="space-y-3">
+                                {totals.top.map((t, index) => (
+                                    <div key={t.name} className="flex justify-between items-center p-4 bg-cream-light rounded-lg border border-chocolate/10 hover:border-saffron/30 transition-all">
+                                        <div className="flex items-center">
+                                            <div className="w-8 h-8 bg-saffron text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">
+                                                {index + 1}
+                                            </div>
+                                            <div className="font-semibold text-chocolate">{t.name}</div>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="text-saffron font-bold">₹{t.revenue.toFixed(2)}</div>
+                                            <div className="text-chocolate/70 text-sm">{t.qty} kg(s) sold</div>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

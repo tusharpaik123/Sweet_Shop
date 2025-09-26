@@ -20,7 +20,7 @@ function Login(){
             const result = await loginApi(data); 
             dispatch(loginAction(result));
             const role = result?.user?.role;
-            navigate(role === 'admin' ? "/admin" : "/dashboard", { replace: true });
+            navigate(role === 'admin' ? "/admin" : "/products", { replace: true });
         } catch (err) {
             const msg = err?.response?.data?.message || "Invalid credentials";
             setApiError(msg);
@@ -28,41 +28,73 @@ function Login(){
     };
 
     return(
-        <div className="pt-8 min-h-[60vh] flex items-center justify-center">
-            <div className="max-w-md w-full p-8 bg-dark-primary/90 backdrop-blur-sm rounded-xl shadow-2xl border border-slate-700">
-                <h2 className="text-3xl font-extrabold text-light-blue mb-6 text-center tracking-wide">Login</h2>
-                {apiError && <div className="mb-3 text-red-400 text-sm">{apiError}</div>}
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <div className="pt-8 min-h-[60vh] flex items-center justify-center animate-fade-in">
+            <div className="max-w-md w-full p-8 card shadow-chocolate">
+                <div className="text-center mb-8">
+                    <div className="text-6xl mb-4"></div>
+                    <h2 className="text-3xl font-bold text-chocolate mb-2">Welcome Back!</h2>
+                    <p className="text-chocolate/70">Sign in to your Sweet Shop account</p>
+                </div>
+                
+                {apiError && (
+                    <div className="mb-6 p-4 bg-error/10 border border-error/30 rounded-lg">
+                        <div className="text-error text-sm font-medium">⚠️ {apiError}</div>
+                    </div>
+                )}
+                
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                        <label htmlFor="email" className="block text-sm font-semibold text-chocolate mb-2">
+                            Email Address
+                        </label>
                         <input 
                             id="email" 
                             type="email" 
-                            placeholder="you@example.com"
+                            placeholder="your@email.com"
                             {...register("email", { required: "Email is required" })}
-                            className={`w-full px-4 py-2 bg-slate-800/30 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition ${errors.email ? 'border-red-500 border-2' : 'border border-slate-600'}`}
+                            className={`form-input w-full ${errors.email ? 'border-error border-2 focus:ring-error' : ''}`}
                         />
-                        {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email.message}</p>}
+                        {errors.email && <p className="mt-2 text-xs text-error">{errors.email.message}</p>}
                     </div>
+                    
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">Password</label>
+                        <label htmlFor="password" className="block text-sm font-semibold text-chocolate mb-2">
+                            Password
+                        </label>
                         <input 
                             id="password" 
                             type="password" 
                             placeholder="••••••••"
                             {...register("password", { required: "Password is required" })}
-                            className={`w-full px-4 py-2 bg-slate-800/30 text-white rounded-lg focus:ring-light-blue focus:border-light-blue transition ${errors.password ? 'border-red-500 border-2' : 'border border-slate-600'}`}
+                            className={`form-input w-full ${errors.password ? 'border-error border-2 focus:ring-error' : ''}`}
                         />
-                        {errors.password && <p className="mt-1 text-xs text-red-400">{errors.password.message}</p>}
+                        {errors.password && <p className="mt-2 text-xs text-error">{errors.password.message}</p>}
                     </div>
+                    
                     <button 
                         type="submit" 
                         disabled={isSubmitting}
-                        className="w-full mt-2 bg-light-blue text-dark-primary py-2.5 px-4 rounded-lg font-bold hover:bg-opacity-90 disabled:opacity-60"
+                        className="btn-primary w-full py-3 text-lg disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                        {isSubmitting ? 'Logging in...' : 'Login'}
+                        {isSubmitting ? (
+                            <span className="flex items-center justify-center">
+                                <span className="animate-spin mr-2">🍯</span>
+                                Signing in...
+                            </span>
+                        ) : (
+                            'Sign In'
+                        )}
                     </button>
                 </form>
+                
+                <div className="mt-8 text-center">
+                    <p className="text-chocolate/70 text-sm">
+                        Don't have an account?{' '}
+                        <a href="/signup" className="text-saffron font-semibold hover:text-saffron-dark transition-colors">
+                            Sign up here
+                        </a>
+                    </p>
+                </div>
             </div>
         </div>
     );
