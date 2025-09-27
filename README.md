@@ -13,6 +13,8 @@ A **Sweet Shop Management System** — a modern web application to manage items,
 
 Sweet_Shop is a full-stack application built to help sweet shop owners manage products, orders, and inventory from a single dashboard. It provides CRUD operations for items, handles user roles (admin, staff), and ensures real-time updates for stock and orders.
 
+Deployed at : https://sweetshop-slus.onrender.com/
+
 ---
 
 ## Features
