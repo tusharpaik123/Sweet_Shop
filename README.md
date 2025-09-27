@@ -1,4 +1,5 @@
 # Sweet_Shop 🍬
+Deployed at : https://sweetshop-slus.onrender.com/
 
 A **Sweet Shop Management System** — a modern web application to manage items, orders, and inventory of a sweet shop.
 
