@@ -15,8 +15,7 @@ import { logout, selectUserAuth, selectUser, selectIsAdmin } from '../../store/a
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeIndicator, setActiveIndicator] = useState({ left: 0, width: 0 });
-  const [isIndicatorReady, setIsIndicatorReady] = useState(false);
+  const [lastClicked, setLastClicked] = useState('home'); // Default to home
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -28,12 +27,52 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/login');
+    navigate('/');
     setIsMenuOpen(false);
+    setLastClicked('home'); // Reset to home when logging out
   };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
+
+  // Handle navigation clicks
+  const handleNavClick = (itemId) => {
+    console.log('Clicked nav item:', itemId); // Debug log
+    setLastClicked(itemId);
+    closeMenu();
+  };
+
+  // Handle auth button clicks (login/signup) - reset to home
+  const handleAuthClick = () => {
+    console.log('Auth button clicked, resetting to home'); // Debug log
+    setLastClicked('none'); // Set to 'none' so no nav items are highlighted on auth pages
+    closeMenu();
+  };
+
+  // Sync with current route on page load/refresh
+  useEffect(() => {
+    const currentPath = location.pathname;
+    console.log('Current path on load:', currentPath); // Debug log
+    
+    // Set initial active state based on current route
+    if (currentPath === '/') {
+      setLastClicked('home');
+    } else if (currentPath.startsWith('/products')) {
+      setLastClicked('products');
+    } else if (currentPath.startsWith('/orders')) {
+      setLastClicked('orders');
+    } else if (currentPath.startsWith('/admin/stats')) {
+      setLastClicked('stats');
+    } else if (currentPath.startsWith('/admin')) {
+      setLastClicked('admin');
+    } else if (currentPath === '/login' || currentPath === '/signup') {
+      // For login/signup pages, don't highlight any nav items
+      setLastClicked('none');
+    } else {
+      // Default to home for other pages
+      setLastClicked('home');
+    }
+  }, [location.pathname]);
 
   // All possible navigation items (including auth buttons)
   const allNavItems = [
@@ -52,56 +91,6 @@ const Header = () => {
     ] : []),
   ];
 
-  // Update indicator position based on active route
-  const updateIndicator = () => {
-    if (!navRef.current) return;
-    
-    const currentPath = location.pathname;
-    console.log('🔍 Current path:', currentPath);
-    
-    // Find active element directly by checking all nav items
-    const allNavElements = navRef.current.querySelectorAll('[data-nav-id]');
-    let activeElement = null;
-    
-    allNavElements.forEach(element => {
-      const navId = element.getAttribute('data-nav-id');
-      const href = element.getAttribute('href');
-      
-      if (href === currentPath || (href !== '/' && currentPath.startsWith(href))) {
-        activeElement = element;
-        console.log('✅ Found active element:', navId, href);
-      }
-    });
-
-    if (activeElement) {
-      const rect = activeElement.getBoundingClientRect();
-      const navRect = navRef.current.getBoundingClientRect();
-      const newIndicator = {
-        left: rect.left - navRect.left,
-        width: rect.width
-      };
-      console.log('📍 Setting indicator:', newIndicator);
-      setActiveIndicator(newIndicator);
-      setIsIndicatorReady(true);
-    } else {
-      console.log('❌ No active element found');
-      setIsIndicatorReady(false);
-    }
-  };
-
-  useEffect(() => {
-    updateIndicator();
-    window.addEventListener('resize', updateIndicator);
-    return () => window.removeEventListener('resize', updateIndicator);
-  }, [location.pathname, userAuth, isAdmin]);
-
-  // Additional effect to handle initial load and navigation changes
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      updateIndicator();
-    }, 200);
-    return () => clearTimeout(timer);
-  }, [location.pathname]);
 
   const menuItems = allNavItems.filter(item => !['login', 'signup'].includes(item.id));
 
@@ -139,31 +128,16 @@ const Header = () => {
           space-y-6 md:space-y-0 md:space-x-6
         `}>
           {/* Menu Items */}
-          <div 
-            ref={navRef}
-            className="px-6 pb-6 md:bg-transparent bg-chocolate md:px-0 md:pb-0 flex flex-col md:flex-row md:items-center md:space-x-6 relative"
-          >
-            {/* Sliding Indicator - Only visible on desktop */}
-            <div 
-              className="hidden md:block absolute bottom-0 h-1 bg-saffron transition-all duration-300 ease-out rounded-full z-10"
-              style={{
-                left: `${activeIndicator.left}px`,
-                width: `${activeIndicator.width}px`,
-                transform: 'translateY(4px)',
-                opacity: isIndicatorReady ? 1 : 0,
-              }}
-            />
-            
+          <div className="px-6 pb-6 md:bg-transparent bg-chocolate md:px-0 md:pb-0 flex flex-col md:flex-row md:items-center md:space-x-6">
             {menuItems.map((item, index) => (
               <Link 
                 key={index}
                 to={item.to}
-                onClick={closeMenu}
-                data-nav-id={item.id}
-                className={`flex items-center space-x-2 p-2 rounded-lg transition-colors hover:text-saffron relative ${
-                  location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to))
-                    ? 'text-saffron' 
-                    : 'text-white'
+                onClick={() => handleNavClick(item.id)}
+                className={`flex items-center space-x-2 p-2 rounded-lg transition-all hover:text-saffron ${
+                  lastClicked === item.id
+                    ? 'text-saffron border-2 border-saffron bg-saffron/20 shadow-lg' 
+                    : 'text-white border-2 border-transparent hover:border-saffron/30'
                 }`}
               >
                 {item.icon}
@@ -177,25 +151,15 @@ const Header = () => {
                 <>
                   <Link 
                     to="/login" 
-                    onClick={closeMenu}
-                    data-nav-id="login"
-                    className={`w-full md:w-auto px-4 py-2 rounded-lg text-center transition-all ${
-                      location.pathname === '/login'
-                        ? 'bg-saffron text-white'
-                        : 'bg-saffron text-white hover:bg-opacity-90'
-                    }`}
+                    onClick={handleAuthClick}
+                    className="w-full md:w-auto bg-saffron text-white px-4 py-2 rounded-lg text-center transition-all hover:bg-opacity-90"
                   >
                     Login
                   </Link>
                   <Link 
                     to="/signup" 
-                    onClick={closeMenu}
-                    data-nav-id="signup"
-                    className={`w-full md:w-auto border border-saffron px-4 py-2 rounded-lg text-center transition-all ${
-                      location.pathname === '/signup'
-                        ? 'bg-saffron text-white'
-                        : 'text-saffron hover:bg-saffron hover:text-white'
-                    }`}
+                    onClick={handleAuthClick}
+                    className="w-full md:w-auto bg-saffron text-white px-4 py-2 rounded-lg text-center transition-all hover:bg-opacity-90"
                   >
                     Sign Up
                   </Link>
