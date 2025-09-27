@@ -138,3 +138,13 @@ Contact
 Author: Tushar Paik
 
 GitHub: tusharpaik123
+---
+<img width="1904" height="859" alt="Screenshot 2025-09-27 045256" src="https://github.com/user-attachments/assets/13b6a21c-9eaa-4f9e-9540-6bf39679dd71" />
+<img width="1901" height="901" alt="Screenshot 2025-09-27 045312" src="https://github.com/user-attachments/assets/603a2634-a22e-4aca-8f45-408896a1ec80" />
+<img width="1853" height="878" alt="Screenshot 2025-09-27 045326" src="https://github.com/user-attachments/assets/09f8eb73-8c4c-47fd-843a-e48f760e9a9b" />
+<img width="1858" height="875" alt="Screenshot 2025-09-27 045345" src="https://github.com/user-attachments/assets/a23d898f-b1f5-48bb-98bc-d663fc4fa554" />
+<img width="1854" height="873" alt="Screenshot 2025-09-27 045404" src="https://github.com/user-attachments/assets/fb2a77a1-405c-4c39-8aa3-93d234e12220" />
+<img width="1652" height="869" alt="Screenshot 2025-09-27 045423" src="https://github.com/user-attachments/assets/e5cb9192-97f8-4099-8ebe-95cef13b7ca1" />
+<img width="1919" height="875" alt="Screenshot 2025-09-27 045440" src="https://github.com/user-attachments/assets/0cc90331-8ed4-4d59-943a-7acde7500cc6" />
+<img width="977" height="754" alt="Screenshot 2025-09-27 045501" src="https://github.com/user-attachments/assets/54bb2eed-210f-4bbd-b01b-b677c67a80f4" />
+<img width="959" height="852" alt="Screenshot 2025-09-27 045602" src="https://github.com/user-attachments/assets/2921545d-388a-403e-b692-dbcf20563fd0" />
